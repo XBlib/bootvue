@@ -1,0 +1,15 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/vue_db?serverTimezone=GMT%2b8
+    username: lxb
+    password: lxb
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+  type-aliases-package: com.lxb.springboot_vue_.pojo

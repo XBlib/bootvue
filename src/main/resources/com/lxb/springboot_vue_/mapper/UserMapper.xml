@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lxb.springboot_vue_.mapper.UserMapper">
+<!--更新用户信息-->
+<!--<set>标签语句最后是以,结尾的话会自动将,去掉-->
+    <update id="updateUser">
+        update sys_user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="nickname != null and username != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null and username != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and username != ''">
+                phone = #{phone},
+            </if>
+            <if test="address != null and username != ''">
+                address = #{address}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+<!--    删除用户信息-->
+    <delete id="delUser">
+        delete from sys_user where id = #{id}
+    </delete>
+<!--    保存用户信息-->
+    <insert id="saveUser">
+        insert into sys_user(id,username,password,nickname,email,phone,address)
+        values (null,#{username},#{password},#{nickname},#{email},#{phone},#{address})
+    </insert>
+<!--    分页查询用户信息-->
+    <select id="getUserPage" resultType="User">
+        select * from sys_user where username like #{username} and phone like concat('%',#{phone},'%') limit #{pageNum} , #{pageSize};
+    </select>
+</mapper>
