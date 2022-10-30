@@ -1,11 +1,12 @@
 HELP.md
 target/
-!springboot_vue/
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
 ### STS ###
+.test
 .apt_generated
 .classpath
 .factorypath
@@ -19,6 +20,7 @@ target/
 *.iws
 *.iml
 *.ipr
+
 
 ### NetBeans ###
 /nbproject/private/
