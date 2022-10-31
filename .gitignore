@@ -4,7 +4,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-springboot_vue_/**
+springboot_vue/**
 ### STS ###
 .test
 .apt_generated
