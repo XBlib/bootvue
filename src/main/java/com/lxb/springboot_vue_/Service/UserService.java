@@ -13,5 +13,6 @@ public interface UserService {
     List<User> getUserList();
     String delUser(Integer id);
     String saveUser(User user);
+
     Map<String, Object> userOfPage(Integer pageNum, Integer pageSize,String username,String phone);
 }
