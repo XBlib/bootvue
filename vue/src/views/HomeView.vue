@@ -172,6 +172,7 @@ export default {
 }
 </script>
 
+
 <style>
 .headerBg {
   background: #dedede !important;
