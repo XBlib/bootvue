@@ -1,5 +1,8 @@
 package com.lxb.springboot_vue_.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.UserService;
 import com.lxb.springboot_vue_.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author 李新波
+ * @author XBlib
  * @version 1.0
  */
 @RestController
@@ -20,26 +23,29 @@ public class UserController {
     //查询用户信息
     @GetMapping("/list")
     public List<User> getUserList() {
-        return userService.getUserList();
+        return userService.list();
     }
-    //删除用户信息
+    //根据id删除用户信息
     @PostMapping("/del")
-    public String delUser(@RequestParam("id") Integer id) {
-        return userService.delUser(id);
+    public Boolean delUser(@RequestParam("id") Integer id) {
+        return userService.removeById(id);
     }
     //更新或保存用户信息
     @PostMapping("/save")
-    public String saveUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public Boolean saveUser(@RequestBody User user) {
+        return userService.saveOrUpdate(user);
     }
     @GetMapping("/page")
-    public Map<String,Object> userOfPage(@RequestParam Integer pageNum,
-                                         @RequestParam Integer pageSize,
-                                         @RequestParam String username,
-                                         @RequestParam String phone
+    public IPage<User> userOfPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize,
+                                  @RequestParam(defaultValue = "") String username,
+                                  @RequestParam(defaultValue = "") String phone
                                          ){
-        username = "%" + username + "%";
-        return userService.userOfPage(pageNum,pageSize,username,phone);
+        IPage<User> page = new Page<>(pageNum,pageSize);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("username",username);
+        queryWrapper.like("phone",phone);
+        return userService.page(page,queryWrapper);
 
     }
 }

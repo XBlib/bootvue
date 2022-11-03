@@ -8,5 +8,4 @@ public class SpringbootVueApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringbootVueApplication.class, args);
     }
-
 }

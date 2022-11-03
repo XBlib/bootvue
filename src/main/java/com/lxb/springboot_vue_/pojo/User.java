@@ -1,14 +1,19 @@
 package com.lxb.springboot_vue_.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
- * @author 李新波
+ * @author XBlib
  * @version 1.0
  */
 @Data
+@TableName("sys_user")
 public class User {
+    @TableId(type = IdType.AUTO)
     private Integer id;
     private String username;
     @JsonIgnore
