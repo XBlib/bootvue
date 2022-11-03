@@ -71,7 +71,6 @@
           <div style="padding: 10px 0">
             <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="username">
             </el-input>
-            <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
 
             <el-input style="width: 200px;margin-left: 30px" placeholder="请输入电话" suffix-icon="el-icon-search" v-model="phone">
             </el-input>
@@ -154,7 +153,7 @@ export default {
     load() {
       fetch("http://localhost:9090/user/page?pageNum=" + this.pageNum + "&pageSize=" + this.pageSize + "&username=" + this.username + "&phone=" + this.phone  )
           .then(res => res.json()).then(res => {
-        this.tableData = res.data
+        this.tableData = res.records
         console.log(res)
         this.total = res.total
       })
