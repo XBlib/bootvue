@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.UserService;
 import com.lxb.springboot_vue_.pojo.User;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +27,14 @@ public class UserController {
         return userService.list();
     }
     //根据id删除用户信息
-    @PostMapping("/del")
-    public Boolean delUser(@RequestParam("id") Integer id) {
+    @DeleteMapping("/del/{id}")
+    public Boolean delUser(@PathVariable Integer id) {
         return userService.removeById(id);
+    }
+    //根据id批量删除
+    @PostMapping("/delBatch")
+    public Boolean delUser(@RequestBody List<Integer> ids) {
+        return userService.removeBatchByIds(ids);
     }
     //更新或保存用户信息
     @PostMapping("/save")
@@ -45,6 +51,7 @@ public class UserController {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("username",username);
         queryWrapper.like("phone",phone);
+        queryWrapper.orderByDesc("id");
         return userService.page(page,queryWrapper);
 
     }
