@@ -1,21 +1,30 @@
 package com.lxb.springboot_vue_.controller;
 
+
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.UserService;
 import com.lxb.springboot_vue_.pojo.User;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author XBlib
  * @version 1.0
  */
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -41,6 +50,7 @@ public class UserController {
     public Boolean saveUser(@RequestBody User user) {
         return userService.saveOrUpdate(user);
     }
+    //查询用户信息(分页)
     @GetMapping("/page")
     public IPage<User> userOfPage(@RequestParam(defaultValue = "1") Integer pageNum,
                                   @RequestParam(defaultValue = "10") Integer pageSize,
@@ -53,6 +63,52 @@ public class UserController {
         queryWrapper.like("phone",phone);
         queryWrapper.orderByDesc("id");
         return userService.page(page,queryWrapper);
-
     }
+    //excel数据导出
+    @GetMapping("/export")
+    public void expUserExcel(HttpServletResponse response) throws IOException {
+        List<User> userList = userService.list();
+        //写到浏览器
+        //默认生成xls格式
+        ExcelWriter writer = ExcelUtil.getWriter(true);
+        //设置别名
+        writer.addHeaderAlias("username","用户名");
+        writer.addHeaderAlias("password","密码");
+        writer.addHeaderAlias("nickname","昵称");
+        writer.addHeaderAlias("email","邮箱");
+        writer.addHeaderAlias("phone","电话");
+        writer.addHeaderAlias("address","地址");
+        writer.addHeaderAlias("createTime","创建时间");
+        writer.setOnlyAlias(true);
+        //设置表头
+        Class<User> userClass = User.class;
+        int length = userClass.getDeclaredFields().length;
+        writer.merge(length - 3,"用户信息");
+        //一次性写出
+        writer.write(userList,true);
+        //设置响应格式
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        String filePath = URLEncoder.encode("用户信息","UTF-8");
+        response.setHeader("Content-Disposition","attachment;filename=" + filePath + ".xlsx");
+        ServletOutputStream outputStream = response.getOutputStream();
+        writer.flush(outputStream,true);
+        outputStream.close();
+        writer.close();
+    }
+    //Excel数据导入
+    @PostMapping("/import")
+    public Boolean imp(MultipartFile file) throws Exception {
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = ExcelUtil.getReader(inputStream);
+        reader.addHeaderAlias("用户名","username");
+        reader.addHeaderAlias("密码","password");
+        reader.addHeaderAlias("昵称","nickname");
+        reader.addHeaderAlias("邮箱","email");
+        reader.addHeaderAlias("电话","phone");
+        reader.addHeaderAlias("地址","address");
+        List<User> list = reader.readAll(User.class);
+        userService.saveBatch(list);
+        return true;
+    }
+
 }

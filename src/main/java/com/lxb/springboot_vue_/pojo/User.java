@@ -23,4 +23,6 @@ public class User {
     private String phone;
     private String address;
     private String createTime;
+    private String avatarUrl;
+
 }
