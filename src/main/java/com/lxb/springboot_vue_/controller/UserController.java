@@ -1,6 +1,7 @@
 package com.lxb.springboot_vue_.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.UserService;
 import com.lxb.springboot_vue_.pojo.User;
+import com.lxb.springboot_vue_.pojo.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,15 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+    @PostMapping("/login")
+    public boolean login(@RequestBody UserDTO userDTO) {
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+        if(StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return false;
+        }
+        return userService.login(userDTO);
+    }
     //查询用户信息
     @GetMapping("/list")
     public List<User> getUserList() {
