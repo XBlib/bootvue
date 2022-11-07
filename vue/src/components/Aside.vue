@@ -12,7 +12,7 @@
     </div>
 
 
-      <el-menu-item index="/">
+      <el-menu-item index="/main/home">
         <template slot="title">
           <i class="el-icon-house"></i>
           <span slot="title">主页</span>
@@ -23,7 +23,7 @@
       <template slot="title"><i class="el-icon-s-custom"></i>
         <span slot="title">系统管理</span>
       </template>
-      <el-menu-item index="/user">
+      <el-menu-item index="/main/user">
         <i class="el-icon-s-custom"></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
