@@ -141,13 +141,13 @@ export default {
           phone: this.phone
         }
       }).then(res => {
-        this.tableData = res.records
-        this.total = res.total
+        this.tableData = res.data.records
+        this.total = res.data.total
       })
     },
     saveUser() {
       this.request.post("/user/save",this.form).then(res => {
-        if(res) {
+        if(res.code === '200') {
           this.$message.success("保存成功")
           this.dialogFormVisible = false
           this.load()
@@ -166,7 +166,7 @@ export default {
     },
     delUser(id) {
       this.request.delete("/user/del/" + id).then(res =>{
-        if(res) {
+        if(res.code === '200') {
           this.$message.success("删除成功")
           this.load()
         } else {
@@ -181,7 +181,7 @@ export default {
     delBatch(){
       let ids = this.multipleSelection.map(v => v.id)
       this.request.post("/user/delBatch/",ids).then(res =>{
-        if(res) {
+        if(res.code === '200') {
           this.$message.success("删除成功")
           this.load()
         } else {
