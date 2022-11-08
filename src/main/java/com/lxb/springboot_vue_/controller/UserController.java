@@ -1,6 +1,8 @@
 package com.lxb.springboot_vue_.controller;
 
 
+import cn.hutool.Hutool;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -9,6 +11,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.UserService;
+import com.lxb.springboot_vue_.common.Constans;
+import com.lxb.springboot_vue_.common.Result;
 import com.lxb.springboot_vue_.pojo.User;
 import com.lxb.springboot_vue_.pojo.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,38 +36,56 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+    //用户登录
     @PostMapping("/login")
-    public boolean login(@RequestBody UserDTO userDTO) {
+    public Result login(@RequestBody UserDTO userDTO) {
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
-        if(StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
-            return false;
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return Result.error(Constans.CODE_600, "参数错误");
         }
         return userService.login(userDTO);
     }
+    //注册用户信息
+    @PostMapping("/register")
+    public Result register(@RequestBody UserDTO userDTO) {
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return Result.error(Constans.CODE_600, "参数错误");
+        }
+        User user = new User();
+        BeanUtil.copyProperties(userDTO,user);
+        return userService.regUser(user);
+    }
+    @GetMapping("/username/{username}")
+    public Result findOne(@PathVariable String username) {
+        return Result.success(userService.getOneUser(username));
+    }
     //查询用户信息
     @GetMapping("/list")
-    public List<User> getUserList() {
-        return userService.list();
+    public Result getUserList() {
+        return Result.success(userService.list());
     }
     //根据id删除用户信息
     @DeleteMapping("/del/{id}")
-    public Boolean delUser(@PathVariable Integer id) {
-        return userService.removeById(id);
+    public Result delUser(@PathVariable Integer id) {
+        return Result.success(userService.removeById(id));
     }
     //根据id批量删除
     @PostMapping("/delBatch")
-    public Boolean delUser(@RequestBody List<Integer> ids) {
-        return userService.removeBatchByIds(ids);
+    public Result delUser(@RequestBody List<Integer> ids) {
+        return Result.success(userService.removeBatchByIds(ids));
     }
     //更新或保存用户信息
     @PostMapping("/save")
-    public Boolean saveUser(@RequestBody User user) {
-        return userService.saveOrUpdate(user);
+    public Result saveUser(@RequestBody User user) {
+        userService.saveOrUpdate(user);
+        return Result.success(userService.getOneUser(user.getUsername()));
     }
     //查询用户信息(分页)
     @GetMapping("/page")
-    public IPage<User> userOfPage(@RequestParam(defaultValue = "1") Integer pageNum,
+    public Result userOfPage(@RequestParam(defaultValue = "1") Integer pageNum,
                                   @RequestParam(defaultValue = "10") Integer pageSize,
                                   @RequestParam(defaultValue = "") String username,
                                   @RequestParam(defaultValue = "") String phone
@@ -73,7 +95,7 @@ public class UserController {
         queryWrapper.like("username",username);
         queryWrapper.like("phone",phone);
         queryWrapper.orderByDesc("id");
-        return userService.page(page,queryWrapper);
+        return Result.success(userService.page(page,queryWrapper));
     }
     //excel数据导出
     @GetMapping("/export")
@@ -108,7 +130,7 @@ public class UserController {
     }
     //Excel数据导入
     @PostMapping("/import")
-    public Boolean imp(MultipartFile file) throws Exception {
+    public Result imp(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         reader.addHeaderAlias("用户名","username");
@@ -119,7 +141,8 @@ public class UserController {
         reader.addHeaderAlias("地址","address");
         List<User> list = reader.readAll(User.class);
         userService.saveBatch(list);
-        return true;
+        return Result.success();
     }
+
 
 }
