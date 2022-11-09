@@ -14,7 +14,7 @@ import com.lxb.springboot_vue_.pojo.dto.UserDTO;
  */
 public interface UserService extends IService<User> {
 
-    Result login(UserDTO userDTO);
+    User login(UserDTO userDTO);
 
     Result regUser(User user);
     User getOneUser(String username);

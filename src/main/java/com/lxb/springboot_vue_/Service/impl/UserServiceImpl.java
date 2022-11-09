@@ -30,7 +30,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
 
     @Override
-    public Result login(UserDTO userDTO) {
+    public User login(UserDTO userDTO) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",userDTO.getUsername());
         queryWrapper.eq("password",userDTO.getPassword());
@@ -42,7 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         }
         if(one != null) {
             BeanUtil.copyProperties(one,userDTO,true);
-            return Result.success(one);
+            return one;
             } else {
             throw new ServiceException(Constans.CODE_600,"用户名和密码错误");
         }

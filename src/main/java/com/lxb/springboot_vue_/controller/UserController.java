@@ -15,6 +15,7 @@ import com.lxb.springboot_vue_.common.Constans;
 import com.lxb.springboot_vue_.common.Result;
 import com.lxb.springboot_vue_.pojo.User;
 import com.lxb.springboot_vue_.pojo.dto.UserDTO;
+import com.lxb.springboot_vue_.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +45,10 @@ public class UserController {
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
             return Result.error(Constans.CODE_600, "参数错误");
         }
-        return userService.login(userDTO);
+        User user = userService.login(userDTO);
+        String token = TokenUtils.getToken(user.getId().toString(), user.getPassword());
+        userDTO.setToken(token);
+        return Result.success(userDTO);
     }
     //注册用户信息
     @PostMapping("/register")
