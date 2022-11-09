@@ -141,8 +141,11 @@ export default {
           phone: this.phone
         }
       }).then(res => {
-        this.tableData = res.data.records
-        this.total = res.data.total
+        if(res.data){
+          this.tableData = res.data.records
+          this.total = res.data.total
+        }
+
       })
     },
     saveUser() {
