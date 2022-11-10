@@ -14,3 +14,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
   type-aliases-package: com.lxb.springboot_vue_.pojo
+
+files:
+  upload:
+    path: D:/JavaProject/boot_vue_fileData/

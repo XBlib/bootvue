@@ -68,6 +68,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
     @Override
     public User getOneUser(String username) {
-        return userMapper.selectOne(Wrappers.<User>lambdaQuery().like(User::getUsername, username));
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
     }
 }
