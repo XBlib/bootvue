@@ -4,8 +4,13 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.FilesService;
+import com.lxb.springboot_vue_.common.Result;
 import com.lxb.springboot_vue_.pojo.Files;
+import com.lxb.springboot_vue_.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * @author XBlib
@@ -96,6 +102,45 @@ public class FileController {
         os.write(FileUtil.readBytes(uploadFile));
         os.flush();
         os.close();
+    }
+    //更新
+    @PostMapping("/update")
+    public Result save(@RequestBody Files files) {
+        return Result.success(filesService.updateById(files));
+    }
+
+    @DeleteMapping("/del/{id}")
+    public Result delFile(@PathVariable Integer id) {
+        Files files = filesService.getById(id);
+        files.setIsDelete(true);
+        filesService.updateById(files);
+        return Result.success();
+    }
+    //根据id批量删除
+    @PostMapping("/delBatch")
+    public Result delFiles(@RequestBody List<Integer> ids) {
+        return filesService.delFiles(ids);
+    }
+
+    /**
+     * 分页查询文件接口
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    @GetMapping("/page")
+    public Result fileOfPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize,
+                             @RequestParam(defaultValue = "") String name
+    ){
+        IPage<Files> page = new Page<>(pageNum,pageSize);
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        //查询未删除的记录
+        queryWrapper.eq("is_delete",false);
+        queryWrapper.like("name",name);
+        queryWrapper.orderByDesc("id");
+        return Result.success(filesService.page(page,queryWrapper));
     }
 
 }
