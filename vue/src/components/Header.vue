@@ -26,16 +26,20 @@
 </template>
 
 <script>
+import user from "@/views/User";
+
 export default {
   name: "Header",
   data() {
     return {
-      user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
     }
+  },
+  created() {
   },
   props: {
     collapseBtnClass: String,
     collapse: Function,
+    user: Object
 
   },
   computed: {

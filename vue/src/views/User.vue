@@ -200,7 +200,7 @@ export default {
       this.load()
     },
     handleExcelImpFail() {
-      this.$message.error("文件导入失败,仅支持xlsx格式")
+      this.$message.error("文件导入失败")
     },
 
     handleSizeChange(pageSize) {

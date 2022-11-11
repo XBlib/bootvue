@@ -6,11 +6,11 @@
       <el-container>
 
         <el-header style="border-bottom: 1px solid #ccc;">
-          <Header :collapseBtnClass="collapseBtnClass" :collapse="collapse"></Header>
+          <Header :collapseBtnClass="collapseBtnClass" :collapse="collapse" :user="user"></Header>
         </el-header>
 
         <el-main>
-          <router-view />
+          <router-view @refreshUser="getUser" />
         </el-main>
       </el-container>
     </el-container>
@@ -22,17 +22,19 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import Header from "@/components/Header";
 import Aside from "@/components/Aside";
 export default {
-  name: 'HomeView',
+  name: 'Home',
   data() {
     return {
       collapseBtnClass: 'el-icon-s-fold',
       isCollapse: false,
       sideWidth: 200,
       logoTextShow: true,
+      user: {}
     }
   },
-  create: {
-
+  created() {
+    //后台获取数据
+    this.getUser()
   },
   methods: {
     collapse() { //点击收缩按钮触发
@@ -46,6 +48,12 @@ export default {
         this.collapseBtnClass = 'el-icon-s-fold'
         this.logoTextShow = true
       }
+    },
+    getUser() {
+      let username = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).username : ""
+      this.request.get("/user/username/" +  username).then(res => {
+        this.user = res.data
+      })
     }
   },
   components: {
