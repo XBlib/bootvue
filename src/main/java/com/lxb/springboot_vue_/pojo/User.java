@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author XBlib
  * @version 1.0
@@ -22,7 +24,7 @@ public class User {
     private String email;
     private String phone;
     private String address;
-    private String createTime;
+    private Date createTime;
     private String avatarUrl;
 
 }
