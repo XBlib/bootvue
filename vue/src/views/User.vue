@@ -22,7 +22,7 @@
       >
         <el-button type="primary" slot="reference" >批量删除 <i class="el-icon-remove-outline"></i></el-button>
       </el-popconfirm>
-      <el-upload action="http://localhost:9090/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImpSuccess" :on-error="handleExcelImpFail" style="display: inline-block">
+      <el-upload action="http://localhost:9090/user/import" :headers="headerObject" :show-file-list="false" accept="xlsx" :on-success="handleExcelImpSuccess" :on-error="handleExcelImpFail" style="display: inline-block">
         <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i> </el-button>
       </el-upload>
 
@@ -113,7 +113,10 @@ export default {
       dialogFormVisible: false,
       headerBg: 'headerBg',
       form: {},
-      multipleSelection: []
+      multipleSelection: [],
+      headerObject: {
+        token: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).token : {}
+      }
     }
   },
   created() {

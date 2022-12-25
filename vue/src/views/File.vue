@@ -8,7 +8,7 @@
     </div>
 
     <div style="margin: 10px 0">
-      <el-upload action="http://localhost:9090/file/upload" :show-file-list="false"  :on-success="handleFileUploadSuccess" :on-error="handleFileUploadFail" style="display: inline-block">
+      <el-upload action="http://localhost:9090/file/upload " :headers="headerObject" :show-file-list="false"  :on-success="handleFileUploadSuccess" :on-error="handleFileUploadFail" style="display: inline-block">
         <el-button type="primary" class="ml-5">上传文件 <i class="el-icon-top"></i> </el-button>
       </el-upload>
       <el-popconfirm
@@ -83,7 +83,10 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      headerBg: 'headerBg'
+      headerBg: 'headerBg',
+      headerObject: {
+        token: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).token : {}
+      }
     }
   },
   components: {
@@ -122,6 +125,7 @@ export default {
       this.form = scope
       this.dialogFormVisible = true
     },
+
     delFile(id) {
       this.request.delete("/file/del/" + id).then(res =>{
         if(res.code === '200') {

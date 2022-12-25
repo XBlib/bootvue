@@ -27,12 +27,16 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="menuName" label="名称" align="center"></el-table-column>
       <el-table-column prop="path" label="路径"  align="center"></el-table-column>
-      <el-table-column prop="icon" label="图标"  align="center"></el-table-column>
+      <el-table-column  label="图标" class-name="fontSize18"  align="center" label-class-name="fontSize12">
+        <template slot-scope="scope">
+          <i :class="scope.row.icon" style="font-size: 20px"/>
+        </template>
+      </el-table-column>
       <el-table-column prop="description" label="描述"  align="center"></el-table-column>
-      <el-table-column label="操作" align="center" >
+      <el-table-column label="操作" align="center" width="300px">
         <template slot-scope="scope">
           <el-button type="primary" @click="handleAdd(scope.row.id)" v-if="!scope.row.pid && !scope.row.path" >新增子菜单 <i class="el-icon-plus"></i></el-button>
-          <el-button type="success" @click="updateUser(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
+          <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
           <el-popconfirm
 
               confirm-button-text='确定'
@@ -42,7 +46,7 @@
               title="您确定要删除吗？"
               @confirm="delUser(scope.row.id)"
           >
-            <el-button class="ml-5" type="danger" slot="reference">删除 <i class="el-icon-delete"></i></el-button>
+            <el-button style="margin-left: 5px;width: 70px" type="danger" slot="reference">删除 <i class="el-icon-delete"></i></el-button>
           </el-popconfirm
           >
         </template>
@@ -59,7 +63,11 @@
           <el-input v-model="form.path" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标">
-          <el-input v-model="form.icon" autocomplete="off"></el-input>
+          <el-select clearable v-model="form.icon" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
+              <i :class="item.value"/>{{item.name}}
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -92,7 +100,8 @@ export default {
       dialogFormVisible: false,
       headerBg: 'headerBg',
       form: {},
-      multipleSelection: []
+      multipleSelection: [],
+      options:[]
     }
   },
   created() {
@@ -141,10 +150,21 @@ export default {
       if(pid) {
         this.form.pid = pid
       }
+
     },
-    updateUser(scope) {
+
+    handleEdit(scope) {
       this.form = scope
       this.dialogFormVisible = true
+
+      this.request.get("/menu/icons", {
+
+      }).then(res => {
+        if(res.data){
+          this.options = res.data
+        }
+
+      })
     },
     delUser(id) {
       this.request.delete("/menu/del/" + id).then(res =>{
@@ -187,5 +207,11 @@ export default {
 <style scoped>
 .headerBg {
   background: #dedede !important;
+}
+.fontSize18{
+  font-size: 18px;
+}
+.fontSize12{
+  font-size: 12px;
 }
 </style>

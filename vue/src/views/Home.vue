@@ -63,7 +63,7 @@ export default {
         title: {
           text: '各季度会员统计',
           subtext: '           比例图',
-          left: '200px'
+          left: '100px'
         },
         tooltip: {
           trigger: 'item',
