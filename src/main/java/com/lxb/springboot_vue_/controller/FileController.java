@@ -71,7 +71,7 @@ public class FileController {
             uploadFile.delete();
         } else {
             //数据库不存在则不删除刚才上传的文件
-            url = "http://localhost:9090/file/" + fileUUID;
+            url = "http://localhost:9090/file/down/" + fileUUID;
         }
         //将文件信息写到数据库
         Files saveFile = new Files();
@@ -90,7 +90,7 @@ public class FileController {
      * @param response
      * @throws IOException
      */
-    @GetMapping("/{fileUUID}")
+    @GetMapping("/down/{fileUUID}")
     public void download(@PathVariable String fileUUID, HttpServletResponse response) throws IOException {
         //根据文件唯一标识获取文件
         File uploadFile = new File(fileUploadPath + fileUUID);

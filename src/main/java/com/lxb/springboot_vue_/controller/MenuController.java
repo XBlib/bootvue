@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.MenuService;
 import com.lxb.springboot_vue_.common.Constans;
 import com.lxb.springboot_vue_.common.Result;
+import com.lxb.springboot_vue_.mapper.DictMapper;
+import com.lxb.springboot_vue_.pojo.Dict;
 import com.lxb.springboot_vue_.pojo.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,8 @@ import java.util.stream.Collectors;
 public class MenuController {
     @Autowired
     private MenuService menuService;
-
+    @Autowired
+    private DictMapper dictMapper;
     @GetMapping("/MenuName/{MenuName}")
     public Result findOne(@PathVariable String MenuName) {
         return Result.success(menuService.getOneRole(MenuName));
@@ -55,7 +58,7 @@ public class MenuController {
     public Result saveMenu(@RequestBody Menu menu) {
         Menu oneRole = menuService.getOneRole(menu.getMenuName());
         if(oneRole != null) {
-            return Result.error(Constans.CODE_600,"该名称已存在");
+            return Result.success("该名称已存在");
         }
         menuService.saveOrUpdate(menu);
         return Result.success();
@@ -71,5 +74,13 @@ public class MenuController {
         queryWrapper.like("menu_name",menuName);
         queryWrapper.orderByDesc("id");
         return Result.success(menuService.page(page, queryWrapper));
+    }
+
+    @GetMapping("/icons")
+    public Result getDict() {
+        QueryWrapper<Dict> dictQueryWrapper = new QueryWrapper<>();
+        dictQueryWrapper.eq("type","icon");
+        List<Dict> dicts = dictMapper.selectList(dictQueryWrapper);
+        return Result.success(dicts);
     }
 }
