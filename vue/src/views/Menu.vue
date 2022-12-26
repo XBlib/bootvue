@@ -162,6 +162,7 @@ export default {
       }).then(res => {
         if(res.data){
           this.options = res.data
+          console.log(res.data)
         }
 
       })

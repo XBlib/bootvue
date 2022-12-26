@@ -78,17 +78,22 @@
       <el-tree
           :props="props"
           :data="menuData"
+          ref="tree"
           show-checkbox
           node-key="id"
-          :default-checked-keys="[4]"
-          :default-expanded-keys="[1]"
-          @check-change="handleCheckChange"
+          :default-checked-keys="checks"
+          :default-expanded-keys="expends"
+
+
       >
+        <span class="custom-tree-node" slot-scope="{node, data }">
+          <span><i :class="data.icon"></i>> {{data.menuName}}</span>
+        </span>
 
       </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="menuDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveUser">确 定</el-button>
+        <el-button type="primary" @click="saveMenu">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -115,6 +120,9 @@ export default {
       menuDialogVisible: false,
       multipleSelection: [],
       menuData:[],
+      expends:[],
+      checks:[],
+      roleId:0,
       props: {
         label: 'menuName'
       }
@@ -145,7 +153,7 @@ export default {
         }
       }).then(res => {
         if(res.data){
-          console.log(res.data)
+
           this.tableData = res.data.records
           this.total = res.data.total
         }
@@ -164,6 +172,25 @@ export default {
           this.load()
         } else {
           this.$message.error("保存失败")
+        }
+      })
+    },
+    async saveMenu() {
+
+      await this.request.post("/role/roleMenu/" + this.roleId,this.$refs.tree.getCheckedKeys())
+          .then(res => {
+          if(res.code === '200') {
+            this.$message.success('绑定成功')
+            this.menuDialogVisible = false;
+          } else {
+            this.$message.error('绑定失败')
+          }
+      })
+      this.request.get("/role/roleMenu/"+ this.roleId).then(res => {
+        if(res.data){
+          this.checks = res.data;
+          console.log(this.checks)
+
         }
       })
     },
@@ -186,7 +213,7 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      console.log(val)
+
       this.multipleSelection = val;
     },
     delBatch(){
@@ -202,12 +229,22 @@ export default {
     },
     selectMenu(roleId) {
       this.menuDialogVisible = true
+      this.roleId = roleId
+      this.checks = []
 
       this.request.get("/menu").then(res => {
         if(res.data){
           this.menuData = res.data;
+          this.expends = this.menuData.map(v => v.id)
         }
+      })
 
+      this.request.get("/role/roleMenu/"+ this.roleId).then(res => {
+        if(res.data){
+          this.checks = res.data;
+          console.log(this.checks)
+
+        }
       })
 
     },
@@ -220,9 +257,7 @@ export default {
       this.pageNum = pageNum
       this.load()
     },
-    handleCheckChange() {
 
-    },
 
   }
 }
