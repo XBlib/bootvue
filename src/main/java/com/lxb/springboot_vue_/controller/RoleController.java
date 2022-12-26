@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lxb.springboot_vue_.Service.RoleService;
 import com.lxb.springboot_vue_.common.Result;
+import com.lxb.springboot_vue_.mapper.RoleMenuMapper;
 import com.lxb.springboot_vue_.pojo.Role;
+import com.lxb.springboot_vue_.pojo.RoleMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,5 +69,16 @@ public class RoleController {
         queryWrapper.orderByDesc("id");
         IPage<Role> page1 = roleService.page(page, queryWrapper);
         return Result.success(page1);
+    }
+    @PostMapping("/roleMenu/{roleId}")
+    public Result roleMenu(@PathVariable Integer roleId,@RequestBody List<Integer> menuIds) {
+        return roleService.setRoleMenu(roleId,menuIds);
+
+    }
+    @GetMapping("/roleMenu/{roleId}")
+    public Result getRoleMenu(@PathVariable Integer roleId) {
+        List<Integer> roleMenu = roleService.getRoleMenu(roleId);
+        return Result.success(roleMenu);
+
     }
 }
